@@ -41,6 +41,7 @@ wire[31:0] w_data;
 
 wire[31:0] reg1_data;
 wire[31:0] reg2_data;
+wire ok;
 
 register_file simreg(
     .clk(clk),
@@ -50,7 +51,8 @@ register_file simreg(
     .w_addr(w_addr),
     .w_data(w_data),
     .reg1_data(reg1_data),
-    .reg2_data(reg2_data)
+    .reg2_data(reg2_data),
+    .write_ok(ok)
 );
 
 simcu simcontrol(
@@ -63,7 +65,8 @@ simcu simcontrol(
     
     .reg_write(requires_reg_write),
     .w_addr(w_addr),
-    .w_data(w_data)
+    .w_data(w_data),
+    .write_ok(ok)
 );
 
 endmodule

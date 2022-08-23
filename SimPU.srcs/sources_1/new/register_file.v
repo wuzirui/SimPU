@@ -28,6 +28,7 @@ module register_file(
     
     input   wire[4:0]   w_addr,
     input   wire[31:0]  w_data,
+    input   wire        write_ok,
     
     output  wire[31:0]  reg1_data,
     output  wire[31:0]  reg2_data
@@ -38,7 +39,7 @@ module register_file(
     assign reg2_data = gpr[reg2_addr];
     
     always @(*) begin
-        if (reg_write) begin
+        if (reg_write && write_ok) begin
             gpr[w_addr] <= w_data;
         end
     end

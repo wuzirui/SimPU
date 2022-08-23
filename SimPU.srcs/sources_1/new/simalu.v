@@ -26,9 +26,15 @@ module simalu(
     input   wire[31:0]  input_2,
     input   wire[2:0]   alu_op,
     
-    output  wire[31:0]  alu_out
+    output  reg[31:0]  alu_out,
+    output  reg        ok
     );
-    
-    assign alu_out = (alu_op == `ALU_ADD) ? input_1 + input_2 
-                     : input_2;
+    always @(*) begin
+        assign ok = 0;
+        #3
+        assign alu_out = (alu_op == `ALU_ADD) ? input_1 + input_2
+                         : (alu_op == `ALU_OR) ? input_1 | input_2
+                         : input_2;
+        assign ok = 1;
+    end
 endmodule

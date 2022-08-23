@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Tue Aug 23 23:28:29 2022
+# Process ID: 26044
+# Current directory: C:/Users/wuzirui/Desktop/VivadoProjects/SimPU/SimPU.runs/synth_1
+# Command line: vivado.exe -log simpu.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source simpu.tcl
+# Log file: C:/Users/wuzirui/Desktop/VivadoProjects/SimPU/SimPU.runs/synth_1/simpu.vds
+# Journal file: C:/Users/wuzirui/Desktop/VivadoProjects/SimPU/SimPU.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source simpu.tcl -notrace
