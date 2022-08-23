@@ -28,8 +28,8 @@ simpu cpu(clk, rst_n);
 initial begin
     // Load instructions
     $readmemh("../../../../SimPU.resources/instructions.txt", cpu.simim.inst_mem);
-//    // Load register initial values
-//    $readmemh("../../../SimPU.resources/registers.txt", ZAN_TOP.ZAN_REG_FILE.gpr);
+    // Load register initial values
+    $readmemh("../../../../SimPU.resources/registers.txt", cpu.simreg.gpr);
 //    // Load memory data initial values
 //    $readmemh("../../../SimPU.resources/data_memory.txt", ZAN_TOP.ZAN_DATA_MEM.dm);
 

@@ -27,4 +27,40 @@ instruction_mem simim(
     .instruction(inst)
 );
 
+wire[4:0] rs;
+wire[4:0] rt;
+wire requires_reg_write;
+wire[2:0] alu_op;
+wire[31:0] alu_out;
+
+simcu simcontrol(
+    .instruction(inst),
+    .rs(rs),
+    .rt(rt),
+    .reg_write(requires_reg_write),
+    .alu_op(alu_op)
+);
+
+wire[31:0] reg1_data;
+wire[31:0] reg2_data;
+wire[15:0] imm16;
+
+assign imm16 = inst[15:0];
+
+simalu alu(
+    .input_1(reg1_data),
+    .input_2({16'b0, imm16}),
+    .alu_out(alu_out)
+);
+
+register_file simreg(
+    .clk(clk),
+    .reg1_addr(rs),
+    .reg_write(requires_reg_write),
+    .w_addr(rt),
+    .w_data(alu_out),
+    .reg1_data(reg1_data),
+    .reg2_data(reg2_data)
+);
+
 endmodule
