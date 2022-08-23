@@ -27,40 +27,43 @@ instruction_mem simim(
     .instruction(inst)
 );
 
-wire[4:0] rs;
-wire[4:0] rt;
-wire requires_reg_write;
-wire[2:0] alu_op;
-wire[31:0] alu_out;
+wire[5:0] opcode;
+wire[4:0] reg1_id;
+wire[4:0] reg2_id;
 
-simcu simcontrol(
-    .instruction(inst),
-    .rs(rs),
-    .rt(rt),
-    .reg_write(requires_reg_write),
-    .alu_op(alu_op)
-);
+assign opcode = inst[31:26];
+assign reg1_id = inst[25:21];
+assign reg2_id = inst[20:16];
+
+wire requires_reg_write;
+wire[4:0] w_addr;
+wire[31:0] w_data;
 
 wire[31:0] reg1_data;
 wire[31:0] reg2_data;
-wire[15:0] imm16;
-
-assign imm16 = inst[15:0];
-
-simalu alu(
-    .input_1(reg1_data),
-    .input_2({16'b0, imm16}),
-    .alu_out(alu_out)
-);
 
 register_file simreg(
     .clk(clk),
-    .reg1_addr(rs),
+    .reg1_addr(reg1_id),
+    .reg2_addr(reg2_id),
     .reg_write(requires_reg_write),
-    .w_addr(rt),
-    .w_data(alu_out),
+    .w_addr(w_addr),
+    .w_data(w_data),
     .reg1_data(reg1_data),
     .reg2_data(reg2_data)
+);
+
+simcu simcontrol(
+    .instruction(inst),
+    .opcode(opcode),
+    .reg1_id(reg1_id),
+    .reg2_id(reg2_id),
+    .reg1_data(reg1_data),
+    .reg2_data(reg2_data),
+    
+    .reg_write(requires_reg_write),
+    .w_addr(w_addr),
+    .w_data(w_data)
 );
 
 endmodule
