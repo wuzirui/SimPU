@@ -37,7 +37,7 @@ initial begin
     clk = 0;
 
     #30 rst_n = 1; // 30ns 时刻 CPU 开始运行
-    #100 $stop;  // 500ns 时刻 CPU 停止
+    #150 $stop;  // 500ns 时刻 CPU 停止
 end
 
 always

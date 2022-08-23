@@ -43,7 +43,8 @@ module simcu(
     assign rt = (addiu || lui) ? instruction[20:16] : `REG_NONE;
     assign reg_write = (addiu || lui) ? 1 : 0;
     
-    assign w_addr = (addiu) ? reg2_id : `REG_NONE;
+    assign w_addr = (addiu || lui) ? reg2_id 
+                    : `REG_NONE;
     
     wire [15:0] imm16;
     assign imm16 = instruction[15:0];
@@ -63,6 +64,8 @@ module simcu(
         .alu_out(alu_out)
     );
     
-    assign w_data = (addiu) ? alu_out : `ZERO;
+    assign w_data = (addiu) ? alu_out
+                    : (lui) ? {16'b0, imm16}
+                    : `ZERO;
     
 endmodule
