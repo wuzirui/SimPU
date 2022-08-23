@@ -2,6 +2,7 @@
 `define PROGRAM_MAXSIZE 5
 
 `define OP_ADDIU        6'b001001
+`define OP_ADDU         6'b000000
 `define OP_LUI          6'b001111
 
 `define REG_NONE        5'b11111

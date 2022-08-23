@@ -34,17 +34,16 @@ module simcu(
     output wire[4:0]    w_addr,
     output wire[31:0]   w_data
     );
-    wire addi, lui;
+    wire addiu, lui, addu;
     assign opcode = instruction[31:26];
-    assign addiu    = (opcode == `OP_ADDIU)     ? 1 : 0;
-    assign lui      = (opcode == `OP_LUI)       ? 1 : 0;
+    assign addiu    = (opcode == `OP_ADDIU) ? 1 : 0;
+    assign lui      = (opcode == `OP_LUI) ? 1 : 0;
+    assign addu     = (opcode == `OP_ADDU && instruction[10:0] == 10'b100001) ? 1 : 0;
     
-    assign rs = (addiu) ? instruction[25:21] : `REG_NONE;
-    assign rt = (addiu || lui) ? instruction[20:16] : `REG_NONE;
-    assign reg_write = (addiu || lui) ? 1 : 0;
+    wire [4:0] rd;
+    assign rd = instruction[15:11];
     
-    assign w_addr = (addiu || lui) ? reg2_id 
-                    : `REG_NONE;
+
     
     wire [15:0] imm16;
     assign imm16 = instruction[15:0];
@@ -53,9 +52,12 @@ module simcu(
     wire [31:0] alu_in1;
     wire [31:0] alu_in2;
     wire [2:0]  alu_op;
-    assign alu_op = (addiu) ? `ALU_ADD : `ALU_NONE;
-    assign alu_in1 = (addiu) ? reg1_data : `ZERO;
-    assign alu_in2 = (addiu) ? {16'b0, imm16} : `ZERO;
+    assign alu_op = (addiu || addu) ? `ALU_ADD : `ALU_NONE;
+    assign alu_in1 = (addiu || addu) ? reg1_data
+                    : `ZERO;
+    assign alu_in2 = (addiu) ? {16'b0, imm16}
+                    : (addu) ? reg2_data
+                    : `ZERO;
     
     simalu alu(
         .input_1(alu_in1),
@@ -63,8 +65,12 @@ module simcu(
         .alu_op(alu_op),
         .alu_out(alu_out)
     );
+    assign reg_write = (addiu || lui || addu) ? 1 : 0;
     
-    assign w_data = (addiu) ? alu_out
+    assign w_addr = (addiu || lui) ? reg2_id 
+                    : (addu) ? rd
+                    : `REG_NONE;
+    assign w_data = (addiu || addu) ? alu_out
                     : (lui) ? {imm16, 16'b0}
                     : `ZERO;
     
