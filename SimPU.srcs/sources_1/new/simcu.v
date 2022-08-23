@@ -65,7 +65,7 @@ module simcu(
     );
     
     assign w_data = (addiu) ? alu_out
-                    : (lui) ? {16'b0, imm16}
+                    : (lui) ? {imm16, 16'b0}
                     : `ZERO;
     
 endmodule
