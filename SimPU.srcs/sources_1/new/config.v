@@ -1,0 +1,2 @@
+`define REG_INITVAL     32'h0
+`define PROGRAM_MAXSIZE 5
