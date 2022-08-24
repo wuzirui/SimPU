@@ -37,7 +37,7 @@ initial begin
     $readmemh("../../../../SimPU.resources/data_memory.txt", cpu.mem.mem);
 
     #30 rst_n = 1; // 30ns 时刻 CPU 开始运行
-    #250 $stop;  // 500ns 时刻 CPU 停止
+    #1000 $stop;  // 500ns 时刻 CPU 停止
 end
 
 always

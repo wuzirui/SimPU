@@ -9,6 +9,12 @@
 `define OP_ORI          6'b001101
 `define OP_SW           6'b101011
 `define OP_LW           6'b100011
+`define OP_J            6'b000010
+`define OP_JR           6'b000000
+
+`define FUNC_ADD        6'b100000
+`define FUNC_ADDU       6'b100001
+`define FUNC_JR         6'b001000
 
 `define REG_NONE        5'b11111
 

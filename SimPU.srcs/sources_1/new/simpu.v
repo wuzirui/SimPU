@@ -15,21 +15,27 @@ simpc pc(
     .pc(pc_addr)
 );
 
+wire[31:0] inst;
+
+wire[5:0] opcode;
+wire[4:0] reg1_id;
+wire[4:0] reg2_id;
+
+wire[31:0] reg1_data;
+wire[31:0] reg2_data;
+wire ok;
+
 nextpc pc_control(
     .pc_addr(pc_addr),
-    .next_pc(next_addr)
+    .next_pc(next_addr),
+    .inst(inst),
+    .reg_addr(reg1_data)
 );
-
-wire[31:0] inst;
 
 instruction_mem simim(
     .inst_addr(pc_addr[11:2]),
     .instruction(inst)
 );
-
-wire[5:0] opcode;
-wire[4:0] reg1_id;
-wire[4:0] reg2_id;
 
 assign opcode = inst[31:26];
 assign reg1_id = inst[25:21];
@@ -39,9 +45,6 @@ wire requires_reg_write;
 wire[4:0] w_addr;
 wire[31:0] w_data;
 
-wire[31:0] reg1_data;
-wire[31:0] reg2_data;
-wire ok;
 
 register_file simreg(
     .clk(clk),
@@ -65,10 +68,12 @@ simmem mem(
     .mem_write(mem_write),
     .mem_addr(mem_addr),
     .read_data(mem_data),
-    .write_data(mem_write_data)
+    .write_data(mem_write_data),
+    .write_ok(ok)
 );
 
 simcu simcontrol(
+    .clk(clk),
     .instruction(inst),
     .opcode(opcode),
     .reg1_id(reg1_id),

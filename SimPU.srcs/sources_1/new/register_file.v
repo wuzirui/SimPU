@@ -38,7 +38,7 @@ module register_file(
     assign reg1_data = gpr[reg1_addr];
     assign reg2_data = gpr[reg2_addr];
     
-    always @(*) begin
+    always @(posedge write_ok) begin
         if (reg_write && write_ok) begin
             gpr[w_addr] <= w_data;
         end

@@ -22,6 +22,7 @@
 
 
 module simalu(
+    input   wire        clk,
     input   wire[31:0]  input_1,
     input   wire[31:0]  input_2,
     input   wire[2:0]   alu_op,
@@ -29,7 +30,7 @@ module simalu(
     output  reg[31:0]  alu_out,
     output  reg        ok
     );
-    always @(*) begin
+    always @(posedge clk) begin
         ok = 0;
         #3
         alu_out = (alu_op == `ALU_ADD) ? input_1 + input_2
