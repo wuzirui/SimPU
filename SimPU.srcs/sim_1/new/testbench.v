@@ -33,8 +33,8 @@ initial begin
     $readmemh("../../../../SimPU.resources/instructions.txt", cpu.simim.inst_mem);
     // Load register initial values
     $readmemh("../../../../SimPU.resources/registers.txt", cpu.simreg.gpr);
-//    // Load memory data initial values
-//    $readmemh("../../../SimPU.resources/data_memory.txt", ZAN_TOP.ZAN_DATA_MEM.dm);
+    // Load memory data initial values
+    $readmemh("../../../../SimPU.resources/data_memory.txt", cpu.mem.mem);
 
     #30 rst_n = 1; // 30ns 时刻 CPU 开始运行
     #250 $stop;  // 500ns 时刻 CPU 停止

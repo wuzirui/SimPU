@@ -55,6 +55,19 @@ register_file simreg(
     .write_ok(ok)
 );
 
+wire mem_write;
+wire [11:2] mem_addr;
+wire [31:0] mem_data;
+wire [31:0] mem_write_data;
+
+simmem mem(
+    .clk(clk),
+    .mem_write(mem_write),
+    .mem_addr(mem_addr),
+    .read_data(mem_data),
+    .write_data(mem_write_data)
+);
+
 simcu simcontrol(
     .instruction(inst),
     .opcode(opcode),
@@ -66,7 +79,12 @@ simcu simcontrol(
     .reg_write(requires_reg_write),
     .w_addr(w_addr),
     .w_data(w_data),
-    .write_ok(ok)
+    .write_ok(ok),
+    
+    .mem_write(mem_write),
+    .mem_addr(mem_addr),
+    .mem_data(mem_data),
+    .mem_write_data(mem_write_data)
 );
 
 endmodule

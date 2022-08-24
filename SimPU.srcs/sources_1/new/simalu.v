@@ -30,11 +30,11 @@ module simalu(
     output  reg        ok
     );
     always @(*) begin
-        assign ok = 0;
+        ok = 0;
         #3
-        assign alu_out = (alu_op == `ALU_ADD) ? input_1 + input_2
-                         : (alu_op == `ALU_OR) ? input_1 | input_2
-                         : input_2;
-        assign ok = 1;
+        alu_out = (alu_op == `ALU_ADD) ? input_1 + input_2
+                  : (alu_op == `ALU_OR) ? input_1 | input_2
+                  : input_2;
+        ok = 1;
     end
 endmodule

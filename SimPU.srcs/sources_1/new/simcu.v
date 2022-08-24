@@ -29,18 +29,24 @@ module simcu(
     input wire[4:0]     reg2_id,
     input wire[31:0]    reg1_data,
     input wire[31:0]    reg2_data,
+    input wire[31:0]    mem_data,
     
     output wire         reg_write,
     output wire[4:0]    w_addr,
     output wire[31:0]   w_data,
-    output reg         write_ok
+    output reg          write_ok,
+    output wire         mem_write,
+    output wire[31:0]   mem_addr,
+    output wire[31:0]   mem_write_data
     );
-    wire addiu, lui, addu, ori;
+    wire addiu, lui, add, ori;
     assign opcode = instruction[31:26];
     assign addiu    = (opcode == `OP_ADDIU) ? 1 : 0;
     assign lui      = (opcode == `OP_LUI) ? 1 : 0;
-    assign addu     = (opcode == `OP_ADDU && instruction[10:0] == 10'b100001) ? 1 : 0;
+    assign add      = (opcode == `OP_ADD) ? 1 : 0;
     assign ori      = (opcode == `OP_ORI) ? 1 : 0;
+    assign sw       = (opcode == `OP_SW) ? 1 : 0;
+    assign lw       = (opcode == `OP_LW) ? 1 : 0;
     
     wire [4:0] rd;
     assign rd = instruction[15:11];
@@ -52,13 +58,13 @@ module simcu(
     wire [31:0] alu_in1;
     wire [31:0] alu_in2;
     wire [2:0]  alu_op;
-    assign alu_op = (addiu || addu) ? `ALU_ADD
+    assign alu_op = (addiu || add || sw) ? `ALU_ADD
                     : (ori) ? `ALU_OR
                     : `ALU_NONE;
-    assign alu_in1 = (addiu || addu || ori) ? reg1_data
+    assign alu_in1 = (addiu || add || ori || sw) ? reg1_data
                     : `ZERO;
-    assign alu_in2 = (addiu || ori) ? {16'b0, imm16}
-                    : (addu) ? reg2_data
+    assign alu_in2 = (addiu || ori || sw) ? {16'b0, imm16}
+                    : (add) ? reg2_data
                     : `ZERO;
     wire alu_ok;
     simalu alu(
@@ -72,13 +78,15 @@ module simcu(
     always @(alu_ok) begin
         write_ok <= (alu_op == `ALU_NONE) ? 1 : alu_ok;
     end
-    assign reg_write = (addiu || lui || addu || ori) ? 1 : 0;
+    assign reg_write = (addiu || lui || add || ori) ? 1 : 0;
     
     assign w_addr = (addiu || lui || ori) ? reg2_id 
-                    : (addu) ? rd
+                    : (add) ? rd
                     : `REG_NONE;
-    assign w_data = (addiu || addu || ori) ? alu_out
+    assign w_data = (addiu || add || ori) ? alu_out
                     : (lui) ? {imm16, 16'b0}
                     : `ZERO;
-    
+    assign mem_write = (sw) ? 1 : 0;
+    assign mem_addr = (sw) ? alu_out : `ZERO;
+    assign mem_write_data = (sw) ? reg2_data : `ZERO;
 endmodule
