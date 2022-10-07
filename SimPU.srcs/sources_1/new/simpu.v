@@ -8,6 +8,8 @@ module simpu(
 wire[31:0] pc_addr;
 wire[31:0] next_addr;
 
+wire flag;
+
 simpc pc(
     .clk(clk),
     .rst_n(rst_n),
@@ -29,6 +31,7 @@ nextpc pc_control(
     .pc_addr(pc_addr),
     .next_pc(next_addr),
     .inst(inst),
+    .flag(flag),
     .reg_addr(reg1_data)
 );
 
@@ -89,7 +92,8 @@ simcu simcontrol(
     .mem_write(mem_write),
     .mem_addr(mem_addr),
     .mem_data(mem_data),
-    .mem_write_data(mem_write_data)
+    .mem_write_data(mem_write_data),
+    .flag(flag)
 );
 
 endmodule

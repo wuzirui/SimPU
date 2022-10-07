@@ -38,7 +38,8 @@ module simcu(
     output reg          write_ok,
     output wire         mem_write,
     output wire[31:0]   mem_addr,
-    output wire[31:0]   mem_write_data
+    output wire[31:0]   mem_write_data,
+    output wire         flag
     );
     wire addiu, lui, add, ori, j, addu, sw, lw, jr;
     wire [5:0] func;
@@ -63,13 +64,14 @@ module simcu(
     assign rd = instruction[15:11];
     assign imm16 = instruction[15:0];
     assign imm26 = instruction[25:0];
+    assign beq      = (opcode == `OP_BEQ) ? 1 : 0;
     assign alu_op = (addiu || add || sw || lw || addu) ? `ALU_ADD
                     : (ori) ? `ALU_OR
                     : `ALU_NONE;
-    assign alu_in1 = (addiu || add || ori || sw || lw || addu) ? reg1_data
+    assign alu_in1 = (addiu || add || ori || sw || lw || addu || beq) ? reg1_data
                     : `ZERO;
     assign alu_in2 = (addiu || ori || sw || lw) ? {16'b0, imm16}
-                        : (add || addu) ? reg2_data
+                        : (add || addu || beq) ? reg2_data
                         : `ZERO;
     
     simalu alu(
@@ -96,4 +98,5 @@ module simcu(
     assign mem_write = (sw) ? 1 : 0;
     assign mem_addr = (sw || lw) ? alu_out : `ZERO;
     assign mem_write_data = (sw) ? reg2_data : `ZERO;
+    assign flag = alu_in1 == alu_in2;
 endmodule

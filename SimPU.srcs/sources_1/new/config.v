@@ -11,6 +11,7 @@
 `define OP_LW           6'b100011
 `define OP_J            6'b000010
 `define OP_JR           6'b000000
+`define OP_BEQ          6'b000100
 
 `define FUNC_ADD        6'b100000
 `define FUNC_ADDU       6'b100001

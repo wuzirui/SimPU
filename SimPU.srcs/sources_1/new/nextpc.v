@@ -26,6 +26,7 @@ module nextpc(
     input wire [31:0]   pc_addr,
     input wire [31:0]   inst,
     input wire [31:0]   reg_addr,
+    input wire flag,
     output reg [31:0]   next_pc
     );
     wire [31:0] pc_off4;
@@ -36,6 +37,7 @@ module nextpc(
     
     assign j = (opcode == `OP_J) ? 1 : 0;
     assign jr = (opcode == `OP_JR && func == `FUNC_JR) ? 1 : 0; 
+    assign beq = (opcode == `OP_BEQ) ? 1 : 0;
     
     assign pc_off4 = pc_addr + 4;
     
@@ -48,7 +50,11 @@ module nextpc(
                 next_pc <= reg_addr;
             end
             else begin
-                next_pc <= pc_off4;
+                if (beq) begin
+                    next_pc <= flag ? pc_addr + inst[15:0] : pc_off4;                    
+                end else begin
+                    next_pc <= pc_off4;
+                end
             end
         end
     end

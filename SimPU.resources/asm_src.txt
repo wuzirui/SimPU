@@ -2,14 +2,15 @@
 
 .text
 main:
-	lui	$t0,	0x64
-	addiu	$t1,	$t0,	0xffff
-	addiu	$t2,	$t0,	0x1
-	addu	$t0,	$t1,	$t2
-	sw	$t0,	0x10010100($zero)
-	lw	$t1,	0x10010100($zero)
-	lui	$t3,	0x0040
-	addiu	$t3,	$t3,	0x48
-	jr	$t3
-	addiu	$t1,	$t0,	0xffff
-	j	main
+	lui	$t0,	0x64					# $t0 ← 0x 0064 0000		$t0 = 0x640000		@0x400000
+	addiu	$t1,	$t0,	0xffff		# $t1 ← $t0 + 0xffff		$t1 = 0x64ffff		@0x400004
+	addiu	$t2,	$t0,	0x1			# $t2 ← $t0 + 0x0001		$t2 = 0x640001		@0x400010
+	addu	$t0,	$t1,	$t2				# $t0 ← $t1 + $t2			$t0 = 0xC90000		@0x400014
+	sw	$t0,	0x10010100($zero)		# mem[0] ← $t0				mem[0] = 0xC90000	@0x400018
+	lw	$t1,	0x10010100($zero)		# $t1 ← mem[0]				$t1 = 0xC90000		@0x400024
+	lui	$t3,	0x0040				# $t3 ← 0x 0040 0000		$t3 = 0x400000		@0x400030
+	addiu	$t3,	$t3,	0x48			# $t3 ← $t3 + 0x48			$t3 = 0x400048		@0x400034
+	jr	$t3						# PC  ← $t3				PC  = 0x400048		@0x400038
+	addiu	$t1,	$t0,	0xffff		# $t1 ← $t0 + 0xffff						@0x40003C
+	j	main						#										@0x400048
+	
